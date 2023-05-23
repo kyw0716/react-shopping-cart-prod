@@ -1,17 +1,17 @@
 import { RecoilRoot } from 'recoil';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import Main from './pages/Main';
 import { Cart } from './pages/Cart';
 
 export const App = () => {
   return (
     <RecoilRoot>
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/cart" element={<Cart />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </RecoilRoot>
   );
 };

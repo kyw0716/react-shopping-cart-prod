@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   cartItemsState,
   selectedCartIdListState,
@@ -7,7 +7,7 @@ import { useProductFetch } from '../fetch/useProductFetch';
 
 export const useCartRecoil = () => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
-  const [, setSelectedCartIdList] = useRecoilState(selectedCartIdListState);
+  const setSelectedCartIdList = useSetRecoilState(selectedCartIdListState);
   const { getProductDetailById } = useProductFetch();
 
   const addRecoilCartById = async (id: number) => {

@@ -23,6 +23,9 @@ export const cartHandlers = [
     if (cartItems.some((cartItem) => cartItem.id === productId))
       return res(ctx.json('이미 있는 상품입니다!'), ctx.status(400));
 
+    if (product === undefined)
+      return res(ctx.json('없는 상품입니다!'), ctx.status(400));
+
     localStorage.setItem(
       CART_ITEMS_KEY,
       JSON.stringify([
