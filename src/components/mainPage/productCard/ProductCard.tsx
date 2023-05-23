@@ -27,16 +27,30 @@ const Style = {
     display: flex;
     flex-direction: column;
     gap: 18px;
+
+    @media screen and (max-width: 480px) {
+      width: 150px;
+      height: 100%;
+    }
   `,
   Image: styled.img`
     width: 283px;
     height: 283px;
+
+    @media screen and (max-width: 480px) {
+      width: 150px;
+      height: 150px;
+    }
   `,
   DescriptionContainer: styled.div`
     width: 283px;
 
     display: flex;
     justify-content: space-between;
+
+    @media screen and (max-width: 480px) {
+      width: 150px;
+    }
   `,
   NamePriceContainer: styled.div`
     display: flex;
@@ -47,8 +61,16 @@ const Style = {
   `,
   Name: styled.span`
     font-size: 16px;
+
+    @media screen and (max-width: 480px) {
+      font-size: 12px;
+    }
   `,
   Price: styled.span`
     font-size: 20px;
+
+    @media screen and (max-width: 480px) {
+      font-size: 16px;
+    }
   `,
 };
