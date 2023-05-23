@@ -1,0 +1,11 @@
+{
+  "files": {
+    "main.js": "/react-shopping-cart/static/js/main.5dac7adf.js",
+    "static/media/BMEULJIRO.otf": "/react-shopping-cart/static/media/BMEULJIRO.b1ec58539d521ca45a56.otf",
+    "index.html": "/react-shopping-cart/index.html",
+    "main.5dac7adf.js.map": "/react-shopping-cart/static/js/main.5dac7adf.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.5dac7adf.js"
+  ]
+}
