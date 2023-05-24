@@ -2,17 +2,20 @@ import { ProductCardGrid } from '../components/mainPage/productCardGrid/ProductC
 import { Layout } from '../layout';
 import { useEffect, useState } from 'react';
 import { Product } from '../types/Product';
+import { useProductFetch } from '../hooks/fetch/useProductFetch';
+import { useRecoilValue } from 'recoil';
+import { APIAtom } from '../recoil/atoms/serverAtom';
 
 function Main() {
-  const [products, setProducts] = useState<Product[] | undefined>();
+  const [products, setProducts] = useState<Product[]>();
+  const { getProductList } = useProductFetch();
+  const apiEndPoint = useRecoilValue(APIAtom);
 
   useEffect(() => {
-    fetch('/products')
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      });
-  }, []);
+    getProductList().then((data) => {
+      setProducts(data);
+    });
+  }, [apiEndPoint]);
 
   return (
     <Layout>

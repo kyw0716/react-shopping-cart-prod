@@ -6,23 +6,23 @@ export const useSelectedCartRecoil = () => {
     selectedCartIdListState
   );
 
-  const addNewSelectedCartId = (id: number) => {
-    setSelectedCartIdList((current) => [...current, id]);
+  const addNewSelectedCartId = (cartId: number) => {
+    setSelectedCartIdList((current) => [...current, cartId]);
   };
 
-  const deleteSelectedCartId = (id: number) => {
+  const deleteSelectedCartId = (cartId: number) => {
     setSelectedCartIdList((current) =>
-      current.filter((selectedCartId) => selectedCartId !== id)
+      current.filter((selectedCartId) => selectedCartId !== cartId)
     );
   };
 
-  const getIsSelectedCartIdListIncludes = (id: number) => {
-    return selectedCartIdList.includes(id);
+  const getIsSelectedCartIdListIncludes = (cartId: number) => {
+    return selectedCartIdList.includes(cartId);
   };
 
   return {
     selectedCartIdList,
-    addNewSelectedCartId,
+    addNewSelectedCartId: addNewSelectedCartId,
     deleteSelectedCartId,
     getIsSelectedCartIdListIncludes,
   };

@@ -1,10 +1,18 @@
 import styled from 'styled-components';
+
 import { LogoIcon } from '../../assets/ShoppingCartIcon';
 import { useNavigate } from 'react-router-dom';
 import { CartListLengthViewer } from './CartListLengthViewer';
+import { useRecoilState } from 'recoil';
+import { APIAtom } from '../../recoil/atoms/serverAtom';
+import { useCartFetch } from '../../hooks/fetch/useCartFetch';
+import { useCartRecoil } from '../../hooks/recoil/useCartRecoil';
 
 export const Header = () => {
   const navigate = useNavigate();
+  const [apiEndPoint, setAPIEndPoints] = useRecoilState(APIAtom);
+  const { getCartItems } = useCartFetch();
+  const { resetCartItems } = useCartRecoil();
 
   return (
     <Style.Container>
@@ -12,6 +20,24 @@ export const Header = () => {
         <Style.LogoContainer onClick={() => navigate('/')}>
           <LogoIcon />
           <Style.Logo>배민문방구</Style.Logo>
+        </Style.LogoContainer>
+        <Style.LogoContainer>
+          서버 선택:
+          <select
+            name="serverList"
+            onChange={(e) => {
+              setAPIEndPoints(e.target.value);
+              getCartItems(e.target.value).then((cartItems) => {
+                resetCartItems(cartItems);
+              });
+            }}
+            value={apiEndPoint}
+          >
+            <option value="">MSW</option>
+            <option value="http://3.34.122.208:8080">썬샷</option>
+            <option value="http://3.37.130.30:8080">아벨</option>
+            <option value="http://15.164.163.46:8080">테오</option>
+          </select>
         </Style.LogoContainer>
         <Style.CartContainer>
           <Style.Cart onClick={() => navigate('/cart')}>장바구니</Style.Cart>

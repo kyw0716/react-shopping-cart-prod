@@ -14,6 +14,7 @@ export const cartHandlers = [
   rest.post('/cart-items', async (req, res, ctx) => {
     const requestData = await req.json();
     const productId = await requestData.productId;
+    const randomCartId = Math.random();
 
     const cartItems = getCartItems();
     const productList = getProductList();
@@ -31,14 +32,19 @@ export const cartHandlers = [
       JSON.stringify([
         ...cartItems,
         {
-          id: productId,
+          id: randomCartId,
           quantity: 1,
           product,
         },
       ])
     );
 
-    return res(ctx.json('success'), ctx.status(200));
+    return res(
+      ctx.json('success'),
+      ctx.status(200),
+      ctx.set({ Location: `${randomCartId}` }),
+      ctx.delay(1000)
+    );
   }),
   rest.patch('/cart-items/:id', async (req, res, ctx) => {
     const requestData = await req.json();

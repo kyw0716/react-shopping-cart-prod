@@ -29,7 +29,8 @@ export const CartItemsSection = () => {
     selectedCartIdListState
   );
 
-  const { deleteRecoilCartById, getCartItemIdList } = useCartRecoil();
+  const { deleteRecoilCartById, getAllCartIdList: getCartItemIdList } =
+    useCartRecoil();
   const { deleteCartItemById } = useCartFetch();
 
   const deleteSelectedProduct = () => {

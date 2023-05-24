@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { SetStateAction } from 'react';
 
 interface CounterProps {
-  count: number;
-  setCount: React.Dispatch<SetStateAction<number>>;
+  count: number | undefined;
+  setCount: React.Dispatch<SetStateAction<number | undefined>>;
 }
 
 export const Counter = ({ count, setCount }: CounterProps) => {
   const handleIncrease = () => {
     setCount((current) => {
+      if (current === undefined) return;
       const increasedValue = current + 1;
 
       if (increasedValue > 999) return 999;
@@ -18,7 +19,7 @@ export const Counter = ({ count, setCount }: CounterProps) => {
   };
 
   const handleDecrease = () => {
-    setCount((current) => current - 1);
+    setCount((current) => (current ? current - 1 : current));
   };
 
   const handleChangeInput: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -33,7 +34,11 @@ export const Counter = ({ count, setCount }: CounterProps) => {
   return (
     <Style.Container>
       <Style.Button onClick={handleDecrease}>➖</Style.Button>
-      <Style.Input value={count} onChange={handleChangeInput} type="number" />
+      <Style.Input
+        value={count ?? 1}
+        onChange={handleChangeInput}
+        type="number"
+      />
       <Style.Button onClick={handleIncrease}>➕</Style.Button>
     </Style.Container>
   );

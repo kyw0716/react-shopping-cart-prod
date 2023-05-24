@@ -13,7 +13,7 @@ export const ProductCard = ({ id, name, price, imageUrl }: Product) => {
           <Style.Name>{name}</Style.Name>
           <Style.Price>{getCommaAddedNumber(price)}원</Style.Price>
         </Style.NamePriceContainer>
-        <AddCartButton id={id} />
+        <AddCartButton productId={id} />
       </Style.DescriptionContainer>
     </Style.Container>
   );

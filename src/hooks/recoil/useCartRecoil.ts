@@ -1,60 +1,82 @@
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
+  CartProductDetail,
   cartItemsState,
   selectedCartIdListState,
 } from '../../recoil/atoms/cartAtom';
 import { useProductFetch } from '../fetch/useProductFetch';
+import { useEffect } from 'react';
 
 export const useCartRecoil = () => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
   const setSelectedCartIdList = useSetRecoilState(selectedCartIdListState);
   const { getProductDetailById } = useProductFetch();
 
-  const addRecoilCartById = async (id: number) => {
-    const product = await getProductDetailById(id);
+  const addRecoilCartById = async (cartId: number, productId: number) => {
+    const product = await getProductDetailById(productId);
 
-    if (cartItems.some((cartItem) => cartItem.id === id)) return;
+    if (cartItems.some((cartItem) => cartItem.id === cartId)) return;
 
     setCartItems((current) => {
-      return [...current, { id: id, quantity: 1, product: product }];
+      return [...current, { id: cartId, quantity: 1, product: product }];
     });
   };
 
-  const deleteRecoilCartById = (id: number) => {
-    setCartItems((current) => current.filter((cartItem) => cartItem.id !== id));
+  const deleteRecoilCartById = (cartId: number) => {
+    setCartItems((current) =>
+      current.filter((cartItem) => cartItem.id !== cartId)
+    );
     setSelectedCartIdList((current) =>
-      current.filter((selectedId) => selectedId !== id)
+      current.filter((selectedId) => selectedId !== cartId)
     );
   };
 
-  const patchRecoilCartItemQuantity = (id: number, quantity: number) => {
+  const patchRecoilCartItemQuantity = (cartId: number, quantity: number) => {
     setCartItems((current) =>
       current.map((cartItem) => {
-        if (cartItem.id === id) return { ...cartItem, quantity };
+        if (cartItem.id === cartId) return { ...cartItem, quantity };
         return cartItem;
       })
     );
   };
 
-  const getProductQuantityById = (id: number) => {
-    return cartItems.find((cartItem) => cartItem.id === id)?.quantity;
+  const getProductQuantityByCartId = (cartId: number) => {
+    const quantity = cartItems.find(
+      (cartItem) => cartItem.id === cartId
+    )?.quantity;
+
+    return quantity;
   };
 
-  const getIsCartIncludes = (id: number) => {
-    return cartItems.some((cartItem) => cartItem.id === id);
+  const getCartHasProduct = (productId: number) => {
+    return cartItems.some((cartItem) => cartItem.product.id === productId);
   };
 
-  const getCartItemIdList = () => {
+  const getAllCartIdList = () => {
     return cartItems.map((cartItem) => cartItem.id);
+  };
+
+  const getCartIdByProductId = (productId: number) => {
+    const cartId = cartItems.find(
+      (cartItem) => cartItem.product.id === productId
+    )?.id;
+
+    return cartId;
+  };
+
+  const resetCartItems = (cartItems: CartProductDetail[]) => {
+    setCartItems(cartItems);
   };
 
   return {
     addRecoilCartById,
     deleteRecoilCartById,
     patchRecoilCartItemQuantity,
-    getProductQuantityById,
-    getIsCartIncludes,
-    getCartItemIdList,
+    getProductQuantityByCartId,
+    getCartHasProduct,
+    getAllCartIdList,
+    getCartIdByProductId,
+    resetCartItems,
     cartItems,
   };
 };

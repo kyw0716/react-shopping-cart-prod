@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { CartItem } from './CartItem';
 import { Product } from '../../../types/Product';
 import { memo } from 'react';
+import { cartItemsState } from '../../../recoil/atoms/cartAtom';
 
 interface CartItemType {
   id: number;
@@ -17,7 +18,14 @@ export const CartItemList = memo(({ cartItemList }: CartProductListProps) => {
   return (
     <Style.Container>
       {cartItemList.map((cartItem) => {
-        return <CartItem key={cartItem.id} {...cartItem.product} />;
+        return (
+          <CartItem
+            key={cartItem.id}
+            {...cartItem.product}
+            productId={cartItem.product.id}
+            cartId={cartItem.id}
+          />
+        );
       })}
     </Style.Container>
   );

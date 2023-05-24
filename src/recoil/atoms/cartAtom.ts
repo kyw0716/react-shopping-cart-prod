@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { Product } from '../../types/Product';
+import { base64 } from '../../constants/user';
 
 export interface CartProductDetail {
   id: number;
@@ -13,7 +14,13 @@ export const cartItemsState = atom<CartProductDetail[]>({
   effects: [
     ({ setSelf, trigger }) => {
       const getCartItems = async () => {
-        const response = await fetch('/cart-items');
+        const response = await fetch(`/cart-items`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Basic ${base64}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const cartItems = await response.json();
 
         setSelf(cartItems);

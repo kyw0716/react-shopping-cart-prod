@@ -39,9 +39,10 @@ type Story = StoryObj<typeof meta>;
 
 export const CartItemComponent: Story = {
   args: {
-    id: 1,
+    productId: 1,
     name: '상품명',
     price: 30000,
+    cartId: 1,
     imageUrl:
       'https://cdn-mart.baemin.com/sellergoods/main/212310b6-6560-4895-8171-afce97bc526d.png',
   },

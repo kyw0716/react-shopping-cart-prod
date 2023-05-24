@@ -9,14 +9,16 @@ import { useCartFetch } from '../../../hooks/fetch/useCartFetch';
 import { useSelectedCartRecoil } from '../../../hooks/recoil/useSelectedCartRecoil';
 
 interface ProductSelectItemProps {
-  id: number;
+  cartId: number;
+  productId: number;
   name: string;
   price: number;
   imageUrl: string;
 }
 
 export const CartItem = ({
-  id,
+  cartId,
+  productId,
   name,
   price,
   imageUrl,
@@ -24,8 +26,9 @@ export const CartItem = ({
   const {
     deleteRecoilCartById,
     patchRecoilCartItemQuantity,
-    getProductQuantityById,
-    getIsCartIncludes,
+    getProductQuantityByCartId,
+    getCartHasProduct,
+    getCartIdByProductId,
   } = useCartRecoil();
   const {
     getIsSelectedCartIdListIncludes,
@@ -35,9 +38,13 @@ export const CartItem = ({
 
   const { deleteCartItemById, patchCartItemQuantity } = useCartFetch();
 
-  const [quantity, setQuantity] = useState<number>(
-    getProductQuantityById(id) ?? 1
-  );
+  const [quantity, setQuantity] = useState<number | undefined>(() => {
+    const cartId = getCartIdByProductId(productId);
+
+    if (cartId === undefined) return 1;
+
+    return getProductQuantityByCartId(cartId);
+  });
 
   const handleDeleteCartItem = () => {
     // eslint-disable-next-line no-restricted-globals
@@ -45,34 +52,36 @@ export const CartItem = ({
 
     if (!isUserWantToDeleteProduct) return setQuantity(1);
 
-    deleteCartItemById(id);
-    deleteRecoilCartById(id);
+    deleteCartItemById(cartId);
+    deleteRecoilCartById(cartId);
   };
 
   const handleClickCheckBox: React.ChangeEventHandler<HTMLInputElement> = (
     e
   ) => {
-    if (e.target.checked) return addNewSelectedCartId(id);
+    if (e.target.checked) return addNewSelectedCartId(cartId);
 
-    deleteSelectedCartId(id);
+    deleteSelectedCartId(cartId);
   };
 
   useEffect(() => {
-    if (!getIsCartIncludes(id)) return;
+    if (!getCartHasProduct(productId)) return;
+
+    if (typeof quantity !== 'number') return;
 
     if (quantity <= 0) return handleDeleteCartItem();
 
-    patchRecoilCartItemQuantity(id, quantity);
-    patchCartItemQuantity(id, quantity);
+    patchRecoilCartItemQuantity(cartId, quantity);
+    patchCartItemQuantity(cartId, quantity);
   }, [quantity]);
 
   return (
     <Style.Container>
       <Style.Content>
         <CheckBox
-          isChecked={getIsSelectedCartIdListIncludes(id)}
+          isChecked={getIsSelectedCartIdListIncludes(cartId)}
           handleClickCheckBox={handleClickCheckBox}
-          id={id}
+          id={productId}
         />
         <Style.ProductImage src={imageUrl} alt={name} />
         <Style.ProductName>{name}</Style.ProductName>
