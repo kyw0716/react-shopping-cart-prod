@@ -23,5 +23,3 @@
 ## 🐞 Bug Report
 
 버그를 발견한다면, [Issues](https://github.com/woowacourse/react-shopping-cart/issues)에 등록해주세요.
-
-## 에이든이랑 페어 시작
