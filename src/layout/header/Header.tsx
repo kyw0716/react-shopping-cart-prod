@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import { LogoIcon } from '../../assets/ShoppingCartIcon';
 import { useNavigate } from 'react-router-dom';
 import { CartListLengthViewer } from './CartListLengthViewer';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { APIAtom } from '../../recoil/atoms/serverAtom';
 import { useCartFetch } from '../../hooks/fetch/useCartFetch';
-import { useCartRecoil } from '../../hooks/recoil/useCartRecoil';
+import { cartItemsState } from '../../recoil/atoms/cartAtom';
 
 export const Header = () => {
   const navigate = useNavigate();
   const [apiEndPoint, setAPIEndPoints] = useRecoilState(APIAtom);
   const { getCartItems } = useCartFetch();
-  const { resetCartItems } = useCartRecoil();
+  const setCartItems = useSetRecoilState(cartItemsState);
 
   return (
     <Style.Container>
@@ -26,17 +26,22 @@ export const Header = () => {
           <select
             name="serverList"
             onChange={(e) => {
-              setAPIEndPoints(e.target.value);
-              getCartItems(e.target.value).then((cartItems) => {
-                resetCartItems(cartItems);
+              setAPIEndPoints(() => {
+                const newApiEndPoint = e.target.value;
+
+                getCartItems(newApiEndPoint).then((cartItems) => {
+                  setCartItems(cartItems);
+                });
+
+                return newApiEndPoint;
               });
             }}
             value={apiEndPoint}
           >
             <option value="">MSW</option>
-            <option value="http://3.34.122.208:8080">썬샷</option>
-            <option value="http://3.37.130.30:8080">아벨</option>
-            <option value="http://15.164.163.46:8080">테오</option>
+            <option value="https://woowacourse-sunshot.store">썬샷</option>
+            <option value="https://woowacours-abel.store">아벨</option>
+            <option value="https://woowacourse-teo.store">테오</option>
           </select>
         </Style.LogoContainer>
         <Style.CartContainer>

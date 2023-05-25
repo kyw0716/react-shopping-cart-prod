@@ -20,12 +20,12 @@ const meta = {
 export default meta;
 
 export const CounterComponent = () => {
-  const [count, setCount] = useState<number | undefined>(1);
+  const [count, setCount] = useState<number>(1);
 
   useEffect(() => {
     if (count === undefined) return;
     if (count <= 0) setCount(1);
   }, [count]);
 
-  return <Counter count={count} setCount={setCount} />;
+  return <Counter quantity={count} onQuantityChange={setCount} />;
 };

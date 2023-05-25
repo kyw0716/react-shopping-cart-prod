@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-
 import { useState, useEffect } from 'react';
-
 import { CheckBox } from '../../../layout/checkBox/CheckBox';
 import { useCartRecoil } from '../../../hooks/recoil/useCartRecoil';
 import { Counter } from '../../../layout/counter/Counter';
 import { useCartFetch } from '../../../hooks/fetch/useCartFetch';
 import { useSelectedCartRecoil } from '../../../hooks/recoil/useSelectedCartRecoil';
+import { selector, useRecoilValue } from 'recoil';
+import { cartItemsState } from '../../../recoil/atoms/cartAtom';
 
 interface ProductSelectItemProps {
   cartId: number;
@@ -23,13 +23,11 @@ export const CartItem = ({
   price,
   imageUrl,
 }: ProductSelectItemProps) => {
-  const {
-    deleteRecoilCartById,
-    patchRecoilCartItemQuantity,
-    getProductQuantityByCartId,
-    getCartHasProduct,
-    getCartIdByProductId,
-  } = useCartRecoil();
+  const cartItems = useRecoilValue(cartItemsState);
+  const initialQuantity =
+    cartItems.find((cartItem) => cartItem.id === cartId)?.quantity ?? 1;
+
+  const { deleteRecoilCartById, patchRecoilCartItemQuantity } = useCartRecoil();
   const {
     getIsSelectedCartIdListIncludes,
     addNewSelectedCartId,
@@ -38,19 +36,11 @@ export const CartItem = ({
 
   const { deleteCartItemById, patchCartItemQuantity } = useCartFetch();
 
-  const [quantity, setQuantity] = useState<number | undefined>(() => {
-    const cartId = getCartIdByProductId(productId);
-
-    if (cartId === undefined) return 1;
-
-    return getProductQuantityByCartId(cartId);
-  });
-
   const handleDeleteCartItem = () => {
     // eslint-disable-next-line no-restricted-globals
     const isUserWantToDeleteProduct = confirm(`${name}을 삭제하시겠습니까?`);
 
-    if (!isUserWantToDeleteProduct) return setQuantity(1);
+    if (!isUserWantToDeleteProduct) return;
 
     deleteCartItemById(cartId);
     deleteRecoilCartById(cartId);
@@ -64,16 +54,12 @@ export const CartItem = ({
     deleteSelectedCartId(cartId);
   };
 
-  useEffect(() => {
-    if (!getCartHasProduct(productId)) return;
-
-    if (typeof quantity !== 'number') return;
-
+  const handleChangeQuantity = (quantity: number) => {
     if (quantity <= 0) return handleDeleteCartItem();
 
     patchRecoilCartItemQuantity(cartId, quantity);
     patchCartItemQuantity(cartId, quantity);
-  }, [quantity]);
+  };
 
   return (
     <Style.Container>
@@ -90,7 +76,10 @@ export const CartItem = ({
             src={`${process.env.PUBLIC_URL}/trashCan.png`}
             onClick={handleDeleteCartItem}
           />
-          <Counter count={quantity} setCount={setQuantity} />
+          <Counter
+            quantity={initialQuantity}
+            onQuantityChange={handleChangeQuantity}
+          />
           <Style.ProductPrice>{price}원</Style.ProductPrice>
         </Style.ProductSelectorContainer>
       </Style.Content>

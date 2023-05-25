@@ -1,11 +1,9 @@
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
-  CartProductDetail,
   cartItemsState,
   selectedCartIdListState,
 } from '../../recoil/atoms/cartAtom';
 import { useProductFetch } from '../fetch/useProductFetch';
-import { useEffect } from 'react';
 
 export const useCartRecoil = () => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
@@ -15,7 +13,7 @@ export const useCartRecoil = () => {
   const addRecoilCartById = async (cartId: number, productId: number) => {
     const product = await getProductDetailById(productId);
 
-    if (cartItems.some((cartItem) => cartItem.id === cartId)) return;
+    if (cartItems.some((cartItem) => cartItem.product.id === productId)) return;
 
     setCartItems((current) => {
       return [...current, { id: cartId, quantity: 1, product: product }];
@@ -64,10 +62,6 @@ export const useCartRecoil = () => {
     return cartId;
   };
 
-  const resetCartItems = (cartItems: CartProductDetail[]) => {
-    setCartItems(cartItems);
-  };
-
   return {
     addRecoilCartById,
     deleteRecoilCartById,
@@ -76,7 +70,6 @@ export const useCartRecoil = () => {
     getCartHasProduct,
     getAllCartIdList,
     getCartIdByProductId,
-    resetCartItems,
     cartItems,
   };
 };

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { getCommaAddedNumber } from '../../../utils/number';
 import { useRecoilValue } from 'recoil';
-import { priceSummaryState } from '../../../recoil/selectors/priceSummary';
+import { priceSummaryState } from '../../../recoil/selectors/priceSummarySelector';
 
 export const OrderSummarySection = () => {
   const { totalProductPrice, deliveryPrice, totalPrice } =

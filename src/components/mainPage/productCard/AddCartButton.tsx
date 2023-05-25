@@ -4,33 +4,31 @@ import { useCartRecoil } from '../../../hooks/recoil/useCartRecoil';
 import { Counter } from '../../../layout/counter/Counter';
 import { useCartFetch } from '../../../hooks/fetch/useCartFetch';
 import Loading from '../../common/Loading';
+import { useRecoilValue } from 'recoil';
+import { cartItemsState } from '../../../recoil/atoms/cartAtom';
 
 interface AddCartButtonProps {
   productId: number;
 }
 
 export const AddCartButton = ({ productId }: AddCartButtonProps) => {
+  const cartItems = useRecoilValue(cartItemsState);
+  const initialQuantity =
+    cartItems.find((cartItem) => cartItem.product.id === productId)?.quantity ??
+    1;
+  const cartId = cartItems.find(
+    (cartItem) => cartItem.product.id === productId
+  )?.id;
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     addRecoilCartById,
     deleteRecoilCartById,
     patchRecoilCartItemQuantity,
-    getProductQuantityByCartId,
-    getCartHasProduct,
-    getCartIdByProductId,
-    cartItems,
   } = useCartRecoil();
   const { addCartItemByProductId, deleteCartItemById, patchCartItemQuantity } =
     useCartFetch();
-
-  const [quantity, setQuantity] = useState<number | undefined>(() => {
-    const cartId = getCartIdByProductId(productId);
-
-    if (cartId === undefined) return 1;
-
-    return getProductQuantityByCartId(cartId);
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickShoppingCartIcon = () => {
     setIsLoading(true);
@@ -45,49 +43,34 @@ export const AddCartButton = ({ productId }: AddCartButtonProps) => {
   };
 
   const deleteCartItem = () => {
-    const cartId = getCartIdByProductId(productId);
-
     if (cartId === undefined) return;
 
     deleteRecoilCartById(cartId);
     deleteCartItemById(cartId);
   };
 
-  const patchQuantity = () => {
-    const cartId = getCartIdByProductId(productId);
-
-    if (quantity === undefined) return;
+  const patchQuantity = (quantity: number) => {
     if (cartId === undefined) return;
 
     patchRecoilCartItemQuantity(cartId, quantity);
     patchCartItemQuantity(cartId, quantity);
   };
 
-  useEffect(() => {
-    if (!getCartHasProduct(productId)) return;
-    if (quantity === undefined) return;
-
+  const handleChangeQuantity = (quantity: number) => {
     if (quantity <= 0) {
       deleteCartItem();
-      setQuantity(1);
       return;
     }
-
-    patchQuantity();
-  }, [quantity]);
-
-  useEffect(() => {
-    const cartId = getCartIdByProductId(productId);
-
-    if (cartId === undefined) return;
-
-    setQuantity(getProductQuantityByCartId(cartId));
-  }, [cartItems]);
+    patchQuantity(quantity);
+  };
 
   return (
     <>
-      {getCartHasProduct(productId) ? (
-        <Counter count={quantity} setCount={setQuantity} />
+      {cartId !== undefined ? (
+        <Counter
+          quantity={initialQuantity}
+          onQuantityChange={handleChangeQuantity}
+        />
       ) : isLoading ? (
         <Loading />
       ) : (

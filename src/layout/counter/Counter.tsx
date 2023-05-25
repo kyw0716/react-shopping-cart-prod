@@ -3,39 +3,35 @@ import styled from 'styled-components';
 import { SetStateAction } from 'react';
 
 interface CounterProps {
-  count: number | undefined;
-  setCount: React.Dispatch<SetStateAction<number | undefined>>;
+  quantity: number;
+  onQuantityChange: (quantity: number) => void;
 }
 
-export const Counter = ({ count, setCount }: CounterProps) => {
+export const Counter = ({ quantity, onQuantityChange }: CounterProps) => {
   const handleIncrease = () => {
-    setCount((current) => {
-      if (current === undefined) return;
-      const increasedValue = current + 1;
+    const increasedValue = quantity + 1;
 
-      if (increasedValue > 999) return 999;
-      return increasedValue;
-    });
+    onQuantityChange(increasedValue > 999 ? 999 : increasedValue);
   };
 
   const handleDecrease = () => {
-    setCount((current) => (current ? current - 1 : current));
+    onQuantityChange(quantity ? quantity - 1 : quantity);
   };
 
   const handleChangeInput: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const inputCount = Number(e.target.value);
 
-    if (inputCount <= 0) return setCount(1);
-    if (inputCount > 999) return setCount(999);
+    if (inputCount <= 0) return onQuantityChange(1);
+    if (inputCount > 999) return onQuantityChange(999);
 
-    setCount(Number(e.target.value));
+    onQuantityChange(Number(e.target.value));
   };
 
   return (
     <Style.Container>
       <Style.Button onClick={handleDecrease}>➖</Style.Button>
       <Style.Input
-        value={count ?? 1}
+        value={quantity ?? 1}
         onChange={handleChangeInput}
         type="number"
       />
