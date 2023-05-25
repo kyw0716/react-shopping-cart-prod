@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import { SetStateAction } from 'react';
-
 interface CounterProps {
   quantity: number;
   onQuantityChange: (quantity: number) => void;

@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
 import { CheckBox } from '../../../layout/checkBox/CheckBox';
 import { useCartRecoil } from '../../../hooks/recoil/useCartRecoil';
 import { Counter } from '../../../layout/counter/Counter';
 import { useCartFetch } from '../../../hooks/fetch/useCartFetch';
 import { useSelectedCartRecoil } from '../../../hooks/recoil/useSelectedCartRecoil';
-import { selector, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { cartItemsState } from '../../../recoil/atoms/cartAtom';
 
 interface ProductSelectItemProps {
