@@ -31,8 +31,8 @@ export const checkBoxSelector = selector({
     const apiEndPoint = get(APIAtom);
     const cartItems = get(cartItemsState(apiEndPoint));
     const selectedCartIdList = get(selectedCartIdListState(apiEndPoint));
-    const isAllCheckBoxChecked = cartItems.every(
-      (cartItem) => !selectedCartIdList.includes(cartItem.id)
+    const isAllCheckBoxChecked = cartItems.every((cartItem) =>
+      selectedCartIdList.includes(cartItem.id)
     );
     return { isAllCheckBoxChecked };
   },
